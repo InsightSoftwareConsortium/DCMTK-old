@@ -69,7 +69,7 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include "itk_zlib.h"        /* for zlibVersion() */
 #endif
 
 // we assume that the inetd super server is available on all non-Windows systems
