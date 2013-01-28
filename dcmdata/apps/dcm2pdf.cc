@@ -46,7 +46,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include "itk_zlib.h"        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcm2pdf"

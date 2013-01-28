@@ -33,7 +33,7 @@
 
 #ifdef WITH_ZLIB
 BEGIN_EXTERN_C
-#include <zlib.h>
+#include "itk_zlib.h"
 END_EXTERN_C
 #endif
 

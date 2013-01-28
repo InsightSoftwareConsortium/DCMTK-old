@@ -29,7 +29,7 @@
 #include "dcmtk/dcmdata/dcpath.h"     /* for DcmPathProcessor */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>                     /* for zlibVersion() */
+#include "itk_zlib.h"     /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "getscu"
