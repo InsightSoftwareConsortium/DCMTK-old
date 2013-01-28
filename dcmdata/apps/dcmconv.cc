@@ -38,7 +38,7 @@
 #include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>                      /* for zlibVersion() */
+#include "itk_zlib.h"                      /* for zlibVersion() */
 #endif
 #ifdef WITH_LIBICONV
 #include "dcmtk/ofstd/ofchrenc.h"      /* for OFCharacterEncoding */

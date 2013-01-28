@@ -37,7 +37,7 @@
 #include "dcmtk/dcmdata/dcrleerg.h"  /* for DcmRLEEncoderRegistration */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>      /* for zlibVersion() */
+#include "itk_zlib.h"      /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmcrle"
