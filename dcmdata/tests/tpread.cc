@@ -38,7 +38,7 @@
 #include "dcmtk/dcmdata/dcfcache.h"
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include "itk_zlib.h"        /* for zlibVersion() */
 #endif
 
 static OFLogger tstpreadLogger = OFLog::getLogger("dcmtk.test.tstpread");
