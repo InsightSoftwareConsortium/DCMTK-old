@@ -46,7 +46,7 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include "itk_zlib.h"        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmprscp"

@@ -55,8 +55,9 @@
 #include <signal.h>
 #endif
 
-// hackish definition of cout, as we can't depend on
+// hackish definition of cerr, as we can't depend on
 // OFConsole.
+#define COUT STD_NAMESPACE cerr
 #define COUT STD_NAMESPACE cout
 
 // define sigjmp_buf if it isn't already
@@ -110,7 +111,6 @@ static int print_flag( STD_NAMESPACE ostream& out, int flag,
                        const char* fname, const char* name,
                        int width )
 {
-    COUT << STD_NAMESPACE setw(width) << STD_NAMESPACE internal << ( flag ? "yes" : "no" );
     print_define( out, fname, name );
     out << " OF" << ( flag ? "True" : "False" ) << '\n';
     return flag;
@@ -196,10 +196,10 @@ static void divide_by_zero()
 template<typename T>
 static void inspect( STD_NAMESPACE ostream& out, const char* name )
 {
-    COUT << "--   " << STD_NAMESPACE left << STD_NAMESPACE setw(14) << name;
+    COUT << STD_NAMESPACE left << "// " << STD_NAMESPACE setw(14) << name;
+    COUT << OFendl;
     print_flag( out, test_trap( &divide_by_zero<T> ), "TRAPS", name, 7 );
     print_flag( out, test_modulo<T>(), "MODULO", name, 7 );
-    COUT << OFendl;
 }
 
 // print a constant's binary representation as a string, so it can be loaded
@@ -450,7 +450,6 @@ static void test_subnormal( STD_NAMESPACE ostream& out, const char* name )
 #endif
     const T denorm = guess<T>::denorm_min();
     const int flag = is_subnormal( denorm );
-    COUT << STD_NAMESPACE setw(7) << STD_NAMESPACE internal << ( flag ? "yes" : "no" );
     print_define( out, "HAS_DENORM", name );
     out << " OFdenorm_" << ( flag ? "pre" : "ab" ) << "sent\n";
     print_binary( out, "DENORM_MIN", name, denorm );
@@ -529,7 +528,7 @@ LONG WINAPI consume_seh_problems( struct _EXCEPTION_POINTERS* )
 }
 #endif
 
-int main( int argc, char** argv )
+int main( int argc, char** )
 {
 #ifdef HAVE_WINDOWS_H
     // Activate the fallback workaround, it will only be used
@@ -538,99 +537,88 @@ int main( int argc, char** argv )
     SetUnhandledExceptionFilter( consume_seh_problems );
 #endif
 
-    COUT << "Inspecting fundamental arithmetic types... " << OFendl;
-    if( argc != 2 )
-    {
-        STD_NAMESPACE cerr << "--   " << "Error: missing destination file "
-                           << "to store collected information." << OFendl;
-        return 1;
-    }
-
-    STD_NAMESPACE ofstream out( argv[1] );
-
-    out << "#ifndef CONFIG_ARITH_H" << '\n';
-    out << "#define CONFIG_ARITH_H" << '\n';
-    out << '\n';
+    COUT << "#ifndef CONFIG_ARITH_H" << '\n';
+    COUT << "#define CONFIG_ARITH_H" << '\n';
+    COUT << '\n';
 
     // workaround to let digits10 be a compile time constant
-    out << "#define DCMTK_SIGNED_CHAR_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT - 1 ) * .30102999566398119521373889472449 ) << OFendl;
-    out << "#define DCMTK_UNSIGNED_CHAR_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * .30102999566398119521373889472449 ) << OFendl;
-    out << "#define DCMTK_SIGNED_SHORT_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed short ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
-    out << "#define DCMTK_UNSIGNED_SHORT_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned short ) * .30102999566398119521373889472449 ) << OFendl;
-    out << "#define DCMTK_SIGNED_INT_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed int ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
-    out << "#define DCMTK_UNSIGNED_INT_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned int ) * .30102999566398119521373889472449 ) << OFendl;
-    out << "#define DCMTK_SIGNED_LONG_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed long ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
-    out << "#define DCMTK_UNSIGNED_LONG_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned long ) * .30102999566398119521373889472449 ) << OFendl;
-    out << "#define DCMTK_FLOAT_MAX_DIGITS10 " << OFstatic_cast( int, FLT_MANT_DIG * .30102999566398119521373889472449 + 2 ) << OFendl;
-    out << "#define DCMTK_DOUBLE_MAX_DIGITS10 " << OFstatic_cast( int, DBL_MANT_DIG * .30102999566398119521373889472449 + 2 ) << OFendl;
+    COUT << "#define DCMTK_SIGNED_CHAR_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT - 1 ) * .30102999566398119521373889472449 ) << OFendl;
+    COUT << "#define DCMTK_UNSIGNED_CHAR_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * .30102999566398119521373889472449 ) << OFendl;
+    COUT << "#define DCMTK_SIGNED_SHORT_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed short ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
+    COUT << "#define DCMTK_UNSIGNED_SHORT_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned short ) * .30102999566398119521373889472449 ) << OFendl;
+    COUT << "#define DCMTK_SIGNED_INT_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed int ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
+    COUT << "#define DCMTK_UNSIGNED_INT_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned int ) * .30102999566398119521373889472449 ) << OFendl;
+    COUT << "#define DCMTK_SIGNED_LONG_DIGITS10 " << OFstatic_cast( int, ( CHAR_BIT * sizeof( signed long ) - 1 ) * .30102999566398119521373889472449 ) << OFendl;
+    COUT << "#define DCMTK_UNSIGNED_LONG_DIGITS10 " << OFstatic_cast( int, CHAR_BIT * sizeof( unsigned long ) * .30102999566398119521373889472449 ) << OFendl;
+    COUT << "#define DCMTK_FLOAT_MAX_DIGITS10 " << OFstatic_cast( int, FLT_MANT_DIG * .30102999566398119521373889472449 + 2 ) << OFendl;
+    COUT << "#define DCMTK_DOUBLE_MAX_DIGITS10 " << OFstatic_cast( int, DBL_MANT_DIG * .30102999566398119521373889472449 + 2 ) << OFendl;
 
-    COUT << "--" << OFendl;
+    COUT << "//" << OFendl;
 
-    COUT << "-- " << STD_NAMESPACE setfill( ' ' ) << STD_NAMESPACE setw(17) << ' '
+    COUT << "// " << STD_NAMESPACE setfill( ' ' ) << STD_NAMESPACE setw(17) << ' '
               << STD_NAMESPACE setw(7) << STD_NAMESPACE internal << "TRAPS"
               << STD_NAMESPACE setw(7) << STD_NAMESPACE internal << "MODULO" << OFendl;
 
-    inspect<char>( out, "char" );
-    inspect<signed char>( out, "signed char" );
-    inspect<unsigned char>( out, "unsigned char" );
-    inspect<signed short>( out, "signed short" );
-    inspect<unsigned short>( out, "unsigned short" );
-    inspect<signed int>( out, "signed int" );
-    inspect<unsigned int>( out, "unsigned int" );
-    inspect<signed long>( out, "signed long" );
-    inspect<unsigned long>( out, "unsigned long" );
+    inspect<char>( COUT, "char" );
+    inspect<signed char>( COUT, "signed char" );
+    inspect<unsigned char>( COUT, "unsigned char" );
+    inspect<signed short>( COUT, "signed short" );
+    inspect<unsigned short>( COUT, "unsigned short" );
+    inspect<signed int>( COUT, "signed int" );
+    inspect<unsigned int>( COUT, "unsigned int" );
+    inspect<signed long>( COUT, "signed long" );
+    inspect<unsigned long>( COUT, "unsigned long" );
 
-    COUT << "--" << OFendl;
+    COUT << "//" << OFendl;
 
-    COUT << "-- " << STD_NAMESPACE setfill( ' ' ) << STD_NAMESPACE setw(18) << ' '
+    COUT << "// " << STD_NAMESPACE setfill( ' ' ) << STD_NAMESPACE setw(18) << ' '
               << STD_NAMESPACE setw(7) << STD_NAMESPACE internal << "float"
               << STD_NAMESPACE setw(7) << STD_NAMESPACE internal << "double" << OFendl;
 
-    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "--   TRAPS";
-    print_flag( out, test_trap( &divide_by_zero<float> ), "TRAPS", "float", 7 );
-    print_flag( out, test_trap( &divide_by_zero<double> ), "TRAPS", "double", 7 );
+    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "//   TRAPS";
     COUT << OFendl;
+    print_flag( COUT, test_trap( &divide_by_zero<float> ), "TRAPS", "float", 7 );
+    print_flag( COUT, test_trap( &divide_by_zero<double> ), "TRAPS", "double", 7 );
 
-    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "--   HAS INFINITY";
-    const int finf = test_inf<float>( out, "float" );
-    const int dinf = test_inf<double>( out, "double" );
+    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "//   HAS INFINITY";
     COUT << OFendl;
+    const int finf = test_inf<float>( COUT, "float" );
+    const int dinf = test_inf<double>( COUT, "double" );
 
-    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "--   QUIET NAN";
-    const int fqnan = test_qnan<float>( out, "float" );
-    const int dqnan = test_qnan<double>( out, "double" );
+    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "//   QUIET NAN";
     COUT << OFendl;
+    const int fqnan = test_qnan<float>( COUT, "float" );
+    const int dqnan = test_qnan<double>( COUT, "double" );
 
-    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "--   SIGNALING NAN";
-    const int fsnan = test_snan<float>( out, "float" );
-    const int dsnan = test_snan<double>( out, "double" );
+    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "//   SIGNALING NAN";
     COUT << OFendl;
+    const int fsnan = test_snan<float>( COUT, "float" );
+    const int dsnan = test_snan<double>( COUT, "double" );
 
-    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "--   IEC-559";
-    test_iec559<float>( out, "float", finf && fqnan && fsnan );
-    test_iec559<double>( out, "double", dinf && dqnan && dsnan );
+    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "//   IEC-559";
     COUT << OFendl;
+    test_iec559<float>( COUT, "float", finf && fqnan && fsnan );
+    test_iec559<double>( COUT, "double", dinf && dqnan && dsnan );
 
-    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "--   HAS DENORM";
-    test_subnormal<float>( out, "float" );
-    test_subnormal<double>( out, "double" );
+    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "//   HAS DENORM";
     COUT << OFendl;
+    test_subnormal<float>( COUT, "float" );
+    test_subnormal<double>( COUT, "double" );
 
-    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "--   TINYNESS BEFORE";
-    test_tinyness_before<float>( out, "float" );
-    test_tinyness_before<double>( out, "double" );
+    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "//   TINYNESS BEFORE";
     COUT << OFendl;
+    test_tinyness_before<float>( COUT, "float" );
+    test_tinyness_before<double>( COUT, "double" );
 
-    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "--   DENORM LOSS";
-    test_denorm_loss<float>( out, "float" );
-    test_denorm_loss<double>( out, "double" );
+    COUT << STD_NAMESPACE setw(20) << STD_NAMESPACE left << "//   DENORM LOSS";
     COUT << OFendl;
+    test_denorm_loss<float>( COUT, "float" );
+    test_denorm_loss<double>( COUT, "double" );
 
-    COUT << "--";
-
-    out << "#define DCMTK_ROUND_STYLE " << FLT_ROUNDS << '\n';
-    out << '\n';
-    out << "#endif // CONFIG_ARITH_H" << '\n';
+    COUT << "#define DCMTK_ROUND_STYLE " << FLT_ROUNDS << '\n';
+    COUT << '\n';
+    COUT << "#endif // CONFIG_ARITH_H" << '\n';
+    COUT << STD_NAMESPACE flush;
 
     return 0;
 }

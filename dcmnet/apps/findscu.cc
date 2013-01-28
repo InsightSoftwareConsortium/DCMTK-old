@@ -30,7 +30,8 @@
 #include "dcmtk/dcmtls/tlsopt.h"        /* for DcmTLSOptions */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>                       /* for zlibVersion() */
+// NOT FOR ITK #include <zlib.h>                       /* for zlibVersion() */
+#include "itk_zlib.h"     /* for zlibVersion() */
 #endif
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #include "dcmtk/ofstd/ofchrenc.h"       /* for OFCharacterEncoding */

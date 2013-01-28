@@ -31,6 +31,11 @@
 #include "dcmtk/dcmnet/diutil.h" /* for DCMNET_WARN() */
 #include "dcmtk/dcmnet/scpcfg.h"
 #include "dcmtk/oflog/oflog.h"
+#include "dcmtk/dcmnet/diutil.h"    /* for DCMNET_WARN() */
+
+#ifdef WITH_ZLIB
+#include "itk_zlib.h"     /* for zlibVersion() */
+#endif
 
 // include this file in doxygen documentation
 

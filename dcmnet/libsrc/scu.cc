@@ -28,7 +28,8 @@
 #include "dcmtk/ofstd/ofmem.h" /* for OFunique_ptr */
 
 #ifdef WITH_ZLIB
-#include <zlib.h> /* for zlibVersion() */
+// NOT FOR ITK #include <zlib.h> /* for zlibVersion() */
+#include "itk_zlib.h"            /* for zlibVersion() */
 #endif
 
 DcmSCU::DcmSCU()

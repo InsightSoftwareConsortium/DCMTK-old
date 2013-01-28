@@ -186,6 +186,7 @@ else(WIN32 AND NOT MINGW)
   # Find TIFF
   if(DCMTK_WITH_TIFF)
     find_package(TIFF QUIET)
+    message(STATUS "Info: TIFF_FOUND=${TIFF_FOUND} TIFF_LIBRARY=${TIFF_LIBRARY}")
     # turn off library if it could not be found
     if(NOT TIFF_FOUND)
       message(STATUS "Warning: TIFF support will be disabled because libtiff was not found.")
@@ -195,6 +196,7 @@ else(WIN32 AND NOT MINGW)
       set(WITH_LIBTIFF 1)
       # libtiff can be compiled with libjpeg support; if available, add libjpeg to library and include path
       find_package(JPEG QUIET)
+      message(STATUS "Info: JPEG_FOUND=${JPEG_FOUND} JPEG_LIBRARY=${JPEG_LIBRARY}")
       if(NOT JPEG_FOUND)
         message(STATUS "Info: DCMTK TIFF support will be enabled (but without JPEG)")
         include_directories(${TIFF_INCLUDE_DIR})
@@ -208,6 +210,12 @@ else(WIN32 AND NOT MINGW)
 
   # Find PNG
   if(DCMTK_WITH_PNG)
+    # Short circuilt for ITK
+    if(PNG_INCLUDE_DIR AND PNG_LIBRARY)
+      include_directories(${PNG_INCLUDE_DIR})
+      set(LIBPNG_LIBS ${PNG_LIBRARY})
+      set(PNG_FOUND 1)
+    else()
     find_package(PNG QUIET)
     if(NOT PNG_FOUND)
       set(DCMTK_WITH_PNG OFF CACHE BOOL "" FORCE)
@@ -218,6 +226,7 @@ else(WIN32 AND NOT MINGW)
       set(WITH_LIBPNG 1)
       include_directories(${PNG_INCLUDE_DIR})
       set(LIBPNG_LIBS ${PNG_LIBRARY})
+    endif()
     endif()
   endif()
 
@@ -269,8 +278,19 @@ else(WIN32 AND NOT MINGW)
 
   # Find zlib
   if(DCMTK_WITH_ZLIB)
+    # if zlib_Libs and zlib_include_dirs
+    # are set -- i.e. if built as part of ITK
+    # then use those variables. find_package will
+    # almost always find the system zlib, even if
+    # ITK builds its own zlib.
+    # Short circuilt for ITK
+    if(ZLIB_INCLUDE_DIRS AND ZLIB_LIBS)
+      include_directories(${ZLIB_INCLUDE_DIRS})
+      set(ZLIB_LIBS ${ZLIB_LIBRARIES})
+      set(ZLIB_FOUND 1)
+    else()
     find_package(ZLIB QUIET)
-    if(NOT ZLIB_FOUND)
+    if(NOT ZLIB_LIBS)
       message(STATUS "Warning: ZLIB support will be disabled because zlib was not found.")
       set(WITH_ZLIB "")
       set(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)
@@ -279,6 +299,7 @@ else(WIN32 AND NOT MINGW)
       set(WITH_ZLIB 1)
       include_directories(${ZLIB_INCLUDE_DIRS})
       set(ZLIB_LIBS ${ZLIB_LIBRARIES})
+    endif()
     endif()
   endif()
 

@@ -33,7 +33,7 @@ BEGIN_EXTERN_C
 #ifdef HAVE_LIBPNG_PNG_H
 #include <libpng/png.h>
 #else
-#include <png.h>
+#include <itk_png.h>
 #endif
 END_EXTERN_C
 

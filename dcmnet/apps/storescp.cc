@@ -65,7 +65,7 @@ END_EXTERN_C
 #include "dcmtk/dcmtls/tlsopt.h"      /* for DcmTLSOptions */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include "itk_zlib.h"        /* for zlibVersion() */
 #endif
 
 // we assume that the inetd super server is available on all non-Windows systems
