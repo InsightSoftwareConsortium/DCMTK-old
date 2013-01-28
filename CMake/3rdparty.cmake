@@ -145,7 +145,9 @@ ELSE(WIN32 AND NOT MINGW)
 
   # Find TIFF
   IF(DCMTK_WITH_TIFF)
-    FIND_PACKAGE(TIFF QUIET)
+    INCLUDE_DIRECTORIES(${TIFF_INCLUDE_DIR})
+    SET(LIBTIFF_LIBS ${TIFF_LIBRARY})
+    list(APPEND LIBTIFF_LIBS ${JPEG_LIBRARY})
     # turn off library if it could not be found
     IF(NOT TIFF_FOUND)
       MESSAGE(STATUS "Warning: TIFF support will be disabled because libtiff was not found.")
@@ -208,8 +210,9 @@ ELSE(WIN32 AND NOT MINGW)
 
   # Find zlib
   IF(DCMTK_WITH_ZLIB)
-    FIND_PACKAGE(ZLIB QUIET)
-    IF(NOT ZLIB_FOUND)
+    INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
+    SET(ZLIB_LIBS ${ZLIB_LIBRARIES})
+    IF(NOT ZLIB_LIBS)
       MESSAGE(STATUS "Warning: ZLIB support will be disabled because zlib was not found.")
       SET(WITH_ZLIB "")
       SET(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)

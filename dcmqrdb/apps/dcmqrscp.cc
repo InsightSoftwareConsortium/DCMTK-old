@@ -72,11 +72,11 @@ END_EXTERN_C
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
 #endif
 
-#ifdef WITH_ZLIB
-#include <zlib.h>                      /* for zlibVersion() */
-#endif
 #ifdef DCMTK_ENABLE_CHARSET_CONVERSION
 #include "dcmtk/ofstd/ofchrenc.h"      /* for OFCharacterEncoding */
+#endif
+#ifdef WITH_ZLIB
+#include "itk_zlib.h"        /* for zlibVersion() */
 #endif
 
 #ifndef OFFIS_CONSOLE_APPLICATION

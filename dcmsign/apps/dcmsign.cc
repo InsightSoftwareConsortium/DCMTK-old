@@ -37,7 +37,7 @@
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>                     /* for zlibVersion() */
+#include "itk_zlib.h"                     /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmsign"
