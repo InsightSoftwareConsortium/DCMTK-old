@@ -27,7 +27,7 @@
 #include "dcmtk/dcmdata/dcostrmf.h" /* for class DcmOutputFileStream */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>                   /* for zlibVersion() */
+#include "itk_zlib.h"                   /* for zlibVersion() */
 #endif
 
 
