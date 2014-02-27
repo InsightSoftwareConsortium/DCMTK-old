@@ -211,14 +211,8 @@ ELSE(WIN32)
 
   # Find zlib
   IF(DCMTK_WITH_ZLIB)
-<<<<<<< HEAD
-        INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
-    SET(ZLIB_LIBS ${ZLIB_LIBRARIES})
-    IF(NOT ZLIB_LIBS)
-=======
     FIND_PACKAGE(ZLIB QUIET)
     IF(NOT ZLIB_FOUND)
->>>>>>> e614997... Set 3rd party package CMake variables only if needed.
       MESSAGE(STATUS "Warning: ZLIB support will be disabled because zlib was not found.")
       SET(WITH_ZLIB "")
       SET(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)
