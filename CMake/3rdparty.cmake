@@ -211,16 +211,28 @@ ELSE(WIN32)
 
   # Find zlib
   IF(DCMTK_WITH_ZLIB)
-    FIND_PACKAGE(ZLIB QUIET)
+    # if zlib_Libs and zlib_include_dirs
+    # are set -- i.e. if built as part of ITK
+    # then use those variables. find_package will
+    # almost always find the system zlib, even if
+    # ITK builds its own zlib.
+    if(ZLIB_INCLUDE_DIRS AND ZLIB_LIBS)
+      include_directories(${ZLIB_INCLUDE_DIRS})
+      set(ZLIB_LIBS ${ZLIB_LIBRARIES})
+      set(ZLIB_FOUND 1)
+    else()
+      FIND_PACKAGE(ZLIB QUIET)
+      IF( ZLIB_FOUND)
+        MESSAGE(STATUS "Info: DCMTK ZLIB support will be enabled")
+        SET(WITH_ZLIB 1)
+        INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
+        SET(ZLIB_LIBS ${ZLIB_LIBRARIES})
+      ENDIF(NOT ZLIB_FOUND)
+    endif()
     IF(NOT ZLIB_FOUND)
       MESSAGE(STATUS "Warning: ZLIB support will be disabled because zlib was not found.")
       SET(WITH_ZLIB "")
       SET(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)
-    ELSE(NOT ZLIB_FOUND)
-      MESSAGE(STATUS "Info: DCMTK ZLIB support will be enabled")
-      SET(WITH_ZLIB 1)
-      INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
-      SET(ZLIB_LIBS ${ZLIB_LIBRARIES})
     ENDIF(NOT ZLIB_FOUND)
   ENDIF(DCMTK_WITH_ZLIB)
 
