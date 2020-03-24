@@ -185,11 +185,19 @@ else(WIN32 AND NOT MINGW)
 
   # Find TIFF
   if(DCMTK_WITH_TIFF)
-    include_directories(${TIFF_INCLUDE_DIR})
-    set(LIBTIFF_LIBS ${TIFF_LIBRARY})
-    list(APPEND LIBTIFF_LIBS ${JPEG_LIBRARY})
+    find_package(TIFF)
+    message(STATUS "Info: TIFF_FOUND=${TIFF_FOUND} TIFF_LIBRARY=${TIFF_LIBRARY}")
+    find_package(JPEG)
+    message(STATUS "Info: JPEG_FOUND=${JPEG_FOUND} JPEG_LIBRARY=${JPEG_LIBRARY}")
+
     # turn off library if it could not be found
-    if(NOT TIFF_FOUND)
+    if(NOT TIFF_FOUND OR NOT JPEG_FOUND)
+      if(NOT TIFF_FOUND)
+        message(STATUS "Warning: TIFF support will be disabled because libtiff was not found")
+      else()
+        message(STATUS "Warning: TIFF support will be disabled because libjpeg was not found")
+      endif()
+
       message(STATUS "Warning: TIFF support will be disabled because libtiff was not found.")
       set(DCMTK_WITH_TIFF OFF CACHE BOOL "" FORCE)
       set(WITH_LIBTIFF "")
@@ -279,17 +287,29 @@ else(WIN32 AND NOT MINGW)
 
   # Find zlib
   if(DCMTK_WITH_ZLIB)
-    include_directories(${ZLIB_INCLUDE_DIRS})
-    set(ZLIB_LIBS ${ZLIB_LIBRARIES})
-    if(NOT ZLIB_LIBS)
+    # if zlib_Libs and zlib_include_dirs
+    # are set -- i.e. if built as part of ITK
+    # then use those variables. find_package will
+    # almost always find the system zlib, even if
+    # ITK builds its own zlib.
+    if(ZLIB_INCLUDE_DIRS AND ZLIB_LIBS)
+      include_directories(${ZLIB_INCLUDE_DIRS})
+      set(ZLIB_LIBS ${ZLIB_LIBRARIES})
+      set(ZLIB_FOUND 1)
+    else()
+      find_package(ZLIB QUIET)
+      if(ZLIB_FOUND)
+        message(STATUS "Info: DCMTK ZLIB support will be enabled")
+        set(WITH_ZLIB 1)
+        include_directories(${ZLIB_INCLUDE_DIRS})
+        set(ZLIB_LIBS ${ZLIB_LIBRARIES})
+      endif()
+    endif()
+
+    if(NOT ZLIB_FOUND)
       message(STATUS "Warning: ZLIB support will be disabled because zlib was not found.")
       set(WITH_ZLIB "")
       set(DCMTK_WITH_ZLIB OFF CACHE BOOL "" FORCE)
-    else()
-      message(STATUS "Info: DCMTK ZLIB support will be enabled")
-      set(WITH_ZLIB 1)
-      include_directories(${ZLIB_INCLUDE_DIRS})
-      set(ZLIB_LIBS ${ZLIB_LIBRARIES})
     endif()
   endif()
 
